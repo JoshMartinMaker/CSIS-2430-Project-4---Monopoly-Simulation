@@ -31,23 +31,23 @@ public abstract class Game {
 		inJail = false;
 		
 		// Initialize gmaeBoard
-		SpaceNames[] allSpaces = SpaceNames.values();
+		SpaceNames[] spaceNamesValues = SpaceNames.values();
 		
-		for (int i = 0; i < allSpaces.length; i++) {
-			if (allSpaces[i].toString().contains("COMMUNITY_CHEST")) {
+		for (int i = 0; i < spaceNamesValues.length; i++) {
+			if (spaceNamesValues[i].toString().contains("COMMUNITY_CHEST")) {
 				gameBoard[i] = new CommunityChest();
 			}
-			else if (allSpaces[i].toString().contains("CHANCE")) {
+			else if (spaceNamesValues[i].toString().contains("CHANCE")) {
 				gameBoard[i] = new Chance();
 			}
-			else if (allSpaces[i].toString().contains("GO_TO_JAIL")) {
+			else if (spaceNamesValues[i].toString().contains("GO_TO_JAIL")) {
 				gameBoard[i] = new GoToJail();
 			}
 			else {
-				gameBoard[i] = new GameSpace(allSpaces[i], maxTurns);
+				gameBoard[i] = new GameSpace(spaceNamesValues[i], maxTurns);
 			}
 			
-			SPACES_BY_NAME.put(allSpaces[i], i);
+			SPACES_BY_NAME.put(spaceNamesValues[i], i);
 		}
 	}
 	
@@ -67,7 +67,7 @@ public abstract class Game {
 	 * @param spaces The number of spaces to move the player.
 	 */
 	private void move(int spaces) {
-		//TODO
+		playerLocation = (playerLocation + spaces) % gameBoard.length;
 	}
 	
 	/**
@@ -78,6 +78,6 @@ public abstract class Game {
 	 * @param location The location the player should be moved to.
 	 */
 	private void move(SpaceNames location) {
-		//TODO
+		playerLocation = SPACES_BY_NAME.get(location);
 	}
 }
