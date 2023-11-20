@@ -1,6 +1,7 @@
 package monopolySimulation;
 
 import edu.princeton.cs.algs4.RedBlackBST;
+import edu.princeton.cs.algs4.StdRandom;
 
 /**
  * Represents the game Monopoly and the actions the player can take.
@@ -8,57 +9,143 @@ import edu.princeton.cs.algs4.RedBlackBST;
  * @author Josh Martin
  *
  */
-public abstract class Game {
+public class Game {
 	
 	private int playerLocation;
 	private GameSpace[] gameBoard;
 	private int doublesRolled;
+	private int turnsInJail;
 	private int getOutOfJailCards;
-	private static final RedBlackBST<SpaceNames, Integer> SPACES_BY_NAME;
+	private static final RedBlackBST<SpaceNames, Integer> SPACES_BY_NAME = initializeSpacesByName();
 	private boolean inJail;
+	private final Strategy strategy;
 	
 	/**
 	 * Constructor for {@code Game} class.
 	 * 
 	 * @param maxTurns The maximum number of turns that will be taken in this game.
+	 * @param playerStrategy The strategy used by the player while in jail.
 	 */
-	public Game(int maxTurns) {
+	public Game(int maxTurns, Strategy playerStrategy) {
 		
 		playerLocation = 0;
 		doublesRolled = 0;
+		turnsInJail = 0;
 		getOutOfJailCards = 0;
-		SPACES_BY_NAME = new RedBlackBST<>();
 		inJail = false;
+		strategy = playerStrategy;
 		
-		// Initialize gmaeBoard
+		// Initialize gameBoard
 		SpaceNames[] spaceNamesValues = SpaceNames.values();
 		
 		for (int i = 0; i < spaceNamesValues.length; i++) {
+			
 			if (spaceNamesValues[i].toString().contains("COMMUNITY_CHEST")) {
-				gameBoard[i] = new CommunityChest();
+				gameBoard[i] = new CommunityChest(spaceNamesValues[i], maxTurns);
 			}
 			else if (spaceNamesValues[i].toString().contains("CHANCE")) {
-				gameBoard[i] = new Chance();
+				gameBoard[i] = new Chance(spaceNamesValues[i], maxTurns);
 			}
 			else if (spaceNamesValues[i].toString().contains("GO_TO_JAIL")) {
-				gameBoard[i] = new GoToJail();
+				gameBoard[i] = new GoToJail(spaceNamesValues[i], maxTurns);
 			}
 			else {
 				gameBoard[i] = new GameSpace(spaceNamesValues[i], maxTurns);
 			}
-			
-			SPACES_BY_NAME.put(spaceNamesValues[i], i);
 		}
 	}
 	
 	/**
 	 * Rolls two 6-sided dice to determine how many spaces the player should move,
-	 * then performs the action dictated by the space the player lands on. If the
-	 * player rolls three doubles (two 1's, two 2's, etc.) and they are not in jail, the player is sent to
-	 * {@link GameSpace.JAIL} instead of moving.
+	 * then performs the action dictated by the space the player lands on. While the
+	 * player is in jail, the player will follow the {@link Strategy} given to this
+	 * object.
+	 * <p>
+	 * If the player rolls three doubles (two 1's, two 2's, etc.) in a row, the
+	 * player is sent to {@code SpaceNames.JAIL} instead of moving. If the player
+	 * rolls doubles while in jail, they are no longer in jail and they move as
+	 * normal. If the player spends three turns in jail without rolling doubles,
+	 * they must pay the $50 fine to leave jail, then they will move as normal.
 	 */
-	abstract void roll();
+	public void roll() {
+		
+		int die1 = 0;
+		int die2 = 0;
+		
+		if (inJail) {
+			
+			turnsInJail++;
+			
+			// Execute in jail strategy
+			switch (strategy) {
+			case A:
+				strategyA();
+				break;
+			case B:
+				strategyB();
+				break;
+			}
+		}
+		
+		// Roll Dice
+		die1 = StdRandom.uniformInt(6) + 1;		// An integer in the interval [1, 6]
+		die2 = StdRandom.uniformInt(6) + 1;
+		
+		// If the player rolled doubles
+		if (die1 == die2) {
+			leaveJail();
+			doublesRolled++;
+		}
+		else {
+			doublesRolled = 0;
+		}
+		
+		// If the player rolled three doubles in a row
+		if (doublesRolled == 3) {
+			goToJail();
+			return;
+		}
+
+		// If the player has spent the maximum number of turns in jail
+		if (turnsInJail == 3) {
+			leaveJail();
+		}
+		
+		if (!inJail) {
+			move(die1 + die2);
+		}
+	}
+
+	/**
+	 * Executes strategy A for rolling while the player is in jail. If the player
+	 * has a "Get Out Of Jail Free" card, they will use it. Otherwise, the player
+	 * will pay the $50 fine to get out of jail.
+	 * 
+	 * @param diceTotal
+	 */
+	private void strategyA() {
+		
+		if (getOutOfJailCards >= 1) {
+			useGetOutOfJailCard();
+		}
+		else {
+			leaveJail();
+		}
+	}
 	
+	/**
+	 * Executes strategy B for rolling while the player is in jail. If the player
+	 * has a "Get Out Of Jail Free" card, they will use it. Otherwise, they will
+	 * stay in jail until they roll doubles or they are forced to pay the $50 fine
+	 * to get out of jail.
+	 */
+	private void strategyB() {
+		
+		if (getOutOfJailCards >= 1) {
+			useGetOutOfJailCard();
+		}
+	}
+
 	/**
 	 * Moves the player by the specified number of spaces. If {@code spaces} is
 	 * positive, moves the player forward in the board. If {@code spaces} is
@@ -66,8 +153,12 @@ public abstract class Game {
 	 * 
 	 * @param spaces The number of spaces to move the player.
 	 */
-	private void move(int spaces) {
+	public void move(int spaces) {
 		playerLocation = (playerLocation + spaces) % gameBoard.length;
+		
+		if (spaces > 0) {
+			gameBoard[playerLocation].effect();
+		}
 	}
 	
 	/**
@@ -77,7 +168,59 @@ public abstract class Game {
 	 * 
 	 * @param location The location the player should be moved to.
 	 */
-	private void move(SpaceNames location) {
+	public void move(SpaceNames location) {
 		playerLocation = SPACES_BY_NAME.get(location);
+	}
+	
+	/**
+	 * Moves the player to {@code SpaceNames.JAIL} and sets {@code inJail} to
+	 * {@code true}.
+	 */
+	private void goToJail() {
+		move(SpaceNames.JAIL);
+		inJail = true;
+	}
+	
+	/**
+	 * Sets {@code inJail} to false and resets {@code turnsInJail}.
+	 */
+	private void leaveJail() {
+		inJail = false;
+		turnsInJail = 0;
+	}
+	
+	/**
+	 * Uses a "Get Out Of Jail Free" card. On use, the player's
+	 * {@code getOutOfJailCards} is decremented and {@code inJail} is set to
+	 * {@code false}. The "Get Out Of Jail Free" card used is discarded after use.
+	 * If the player owns both cards, the card from the {@link Chance} deck is used
+	 * first.
+	 */
+	private void useGetOutOfJailCard() {
+		getOutOfJailCards--;
+		leaveJail();
+		
+		if (!Chance.discardGetOutOfJailCard()) {
+			CommunityChest.discardGetOutOfJailCard();
+		}
+	}
+	
+	/**
+	 * Initializes {@code SPACES_BY_NAME} with each space in {@link SpaceNames}
+	 * keyed to integers in the order they are declared in the enum.
+	 * 
+	 * @return A symbol table with each {@link SpaceNames} value keyed to integers
+	 *         in the order they are declared in the enum.
+	 */
+	private static RedBlackBST<SpaceNames, Integer> initializeSpacesByName() {
+
+		RedBlackBST<SpaceNames, Integer> result = new RedBlackBST<>();
+		SpaceNames[] spaceNamesValues = SpaceNames.values();
+		
+		for (int i = 0; i < spaceNamesValues.length; i++) {
+			result.put(spaceNamesValues[i], i);
+		}
+		
+		return result;
 	}
 }
