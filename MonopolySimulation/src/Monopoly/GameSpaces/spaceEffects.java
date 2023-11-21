@@ -1,4 +1,4 @@
-package Monopoly;
+package Monopoly.GameSpaces;
 
 public enum spaceEffects {
 	NEXT_RAILROAD, NEXT_UTILITY, GET_OUT_OF_JAIL_FREE,

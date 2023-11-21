@@ -1,4 +1,4 @@
-package Monopoly;
+package Monopoly.GameSpaces;
 
 public interface SpaceEffect {
 	public spaceEffects effect();

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package Monopoly;
+package Monopoly.GameSpaces;
 
 /**
  * @author Zach Royer

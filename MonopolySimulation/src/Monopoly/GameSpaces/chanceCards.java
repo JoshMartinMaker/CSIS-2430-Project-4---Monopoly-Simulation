@@ -1,4 +1,4 @@
-package Monopoly;
+package Monopoly.GameSpaces;
 
 public enum chanceCards {
 	NEXT_RAILROAD,
