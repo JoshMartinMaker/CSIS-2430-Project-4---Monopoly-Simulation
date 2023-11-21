@@ -1,6 +1,6 @@
 package Monopoly.GameSpaces;
 
-public enum chanceCards {
+public enum ChanceCards {
 	NEXT_RAILROAD,
 	NEXT_UTILITY,
 	GET_OUT_OF_JAIL_FREE,
