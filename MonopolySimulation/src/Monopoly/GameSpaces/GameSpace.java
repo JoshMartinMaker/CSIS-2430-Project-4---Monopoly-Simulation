@@ -8,12 +8,12 @@ package Monopoly.GameSpaces;
  */
 public class GameSpace implements SpaceEffect {
 
-	private spaceNames name;
+	private SpaceNames name;
 	private int timeLandedOn;
 	private double percentLandedOn;
 	private static int maxTurns;
 
-	public GameSpace(spaceNames name, int maxTurns) {
+	public GameSpace(SpaceNames name, int maxTurns) {
 		this.name = name;
 		this.maxTurns = maxTurns;
 	}
@@ -23,7 +23,7 @@ public class GameSpace implements SpaceEffect {
 		return null;
 	}
 
-	public spaceNames getName() {
+	public SpaceNames getName() {
 		return this.name;
 	}
 
