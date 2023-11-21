@@ -3,6 +3,8 @@
  */
 package Monopoly.GameSpaces;
 
+import monopolySimulation.SpaceNames;
+
 /**
  * @author Zach Royer
  */

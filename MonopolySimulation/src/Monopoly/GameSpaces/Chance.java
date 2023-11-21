@@ -1,5 +1,7 @@
 package Monopoly.GameSpaces;
 
+import monopolySimulation.SpaceNames;
+
 public class Chance extends GameSpace {
 
 	public Chance(SpaceNames name, int maxTurns) {
