@@ -1,5 +1,5 @@
 package Monopoly.GameSpaces;
 
 public interface SpaceEffect {
-	public spaceEffects effect();
+	public SpaceEffects effect();
 }
