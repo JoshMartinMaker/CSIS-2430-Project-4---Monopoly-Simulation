@@ -19,7 +19,6 @@ public class GameSpace implements SpaceEffect {
 	}
 	@Override
 	public spaceEffects effect() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
