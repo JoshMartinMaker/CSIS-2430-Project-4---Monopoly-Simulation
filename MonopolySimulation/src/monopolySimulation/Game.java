@@ -1,5 +1,10 @@
 package monopolySimulation;
 
+import Monopoly.GameSpaces.Chance;
+import Monopoly.GameSpaces.CommunityChest;
+import Monopoly.GameSpaces.GameSpace;
+import Monopoly.GameSpaces.GoToJail;
+import Monopoly.GameSpaces.SpaceEffects;
 import edu.princeton.cs.algs4.RedBlackBST;
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -156,8 +161,58 @@ public class Game {
 	public void move(int spaces) {
 		playerLocation = (playerLocation + spaces) % gameBoard.length;
 		
-		if (spaces > 0) {
-			gameBoard[playerLocation].effect();
+		if (spaces <= 0) {
+			return;
+		}
+		
+		SpaceEffects spaceEffect = gameBoard[playerLocation].effect();
+		
+		switch (spaceEffect) {
+		case NEXT_RAILROAD:
+			
+			int readingRailroad = SPACES_BY_NAME.get(SpaceNames.READING_RAILROAD);
+			int pennsylvaniaRailroad = SPACES_BY_NAME.get(SpaceNames.PENNSYLVANIA_RAILROAD);
+			int boRailroad = SPACES_BY_NAME.get(SpaceNames.BO_RAILROAD);
+			int shortLine = SPACES_BY_NAME.get(SpaceNames.SHORT_LINE);
+			
+			if (playerLocation < readingRailroad || playerLocation > shortLine) {
+				move(SpaceNames.READING_RAILROAD);
+			}
+			else if (playerLocation < pennsylvaniaRailroad) {
+				move(SpaceNames.PENNSYLVANIA_RAILROAD);
+			}
+			else if (playerLocation < boRailroad) {
+				move(SpaceNames.BO_RAILROAD);
+			}
+			else {
+				move(SpaceNames.SHORT_LINE);
+			}
+			
+			break;
+		case NEXT_UTILITY:
+			
+			int electricCompany = SPACES_BY_NAME.get(SpaceNames.ELECTRIC_COMPANY);
+			int waterWorks = SPACES_BY_NAME.get(SpaceNames.WATER_WORKS);
+			
+			if (playerLocation < electricCompany || playerLocation > waterWorks) {
+				move(SpaceNames.ELECTRIC_COMPANY);
+			}
+			else {
+				move(SpaceNames.WATER_WORKS);
+			}
+			
+			break;
+		case GET_OUT_OF_JAIL_FREE:
+			
+			getOutOfJailCards++;
+			break;
+		case BACK_THREE_SPACES:
+			
+			move(-3);
+			break;
+		default:
+			SpaceNames locationName = SpaceNames.valueOf(spaceEffect.toString());
+			move(locationName);
 		}
 	}
 	
