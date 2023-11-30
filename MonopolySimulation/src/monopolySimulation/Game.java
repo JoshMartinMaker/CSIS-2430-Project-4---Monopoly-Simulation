@@ -1,10 +1,6 @@
 package monopolySimulation;
 
-import Monopoly.GameSpaces.Chance;
-import Monopoly.GameSpaces.CommunityChest;
-import Monopoly.GameSpaces.GameSpace;
-import Monopoly.GameSpaces.GoToJail;
-import Monopoly.GameSpaces.SpaceEffects;
+import Monopoly.GameSpaces.*;
 import edu.princeton.cs.algs4.RedBlackBST;
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -277,5 +273,14 @@ public class Game {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Returns the game board for this simulation.
+	 * 
+	 * @return The game board for this simulation.
+	 */
+	public GameSpace[] getGameBoard() {
+		return gameBoard;
 	}
 }
