@@ -19,10 +19,13 @@ public class GameSimulationClient {
     private RedBlackBST<Integer, GameSpace[]> strategyBResults;
     
 	public static void main(String[] args) {
+		for (int n = 0; n < 1_000_000; n = game.roll()){
 
+		}
+		simulateGame(game.roll(), Strategy.values());
     }
 
-    private void simulateGame(int maxTurns, String startegy) {
+    private void simulateGame(int maxTurns, Strategy startegy) {
 
     }
     
