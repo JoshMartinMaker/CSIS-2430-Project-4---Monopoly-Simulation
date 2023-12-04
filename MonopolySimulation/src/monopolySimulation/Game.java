@@ -159,6 +159,10 @@ public class Game {
 		
 		SpaceEffects spaceEffect = gameBoard[playerLocation].effect();
 		
+		if (spaceEffect == null) {
+			return;
+		}
+		
 		switch (spaceEffect) {
 		case NEXT_RAILROAD:
 			
@@ -203,6 +207,7 @@ public class Game {
 			move(-3);
 			break;
 		default:
+			
 			SpaceNames locationName = SpaceNames.valueOf(spaceEffect.toString());
 			move(locationName);
 		}
