@@ -19,7 +19,7 @@ public class GameSimulationClient {
 	private static RedBlackBST<Integer, GameSpace[]> strategyBResults = new RedBlackBST<>();
 
 	public static void main(String[] args) {
-
+		
 		final int MAX_TURNS = 1_000_000;
 
 		for (int currentTurns = 1000; currentTurns <= MAX_TURNS; currentTurns *= 10) {
@@ -67,7 +67,7 @@ public class GameSimulationClient {
 	 */
 	private static void writeResults(int n, Strategy strategy) {
 
-		String file = "src/monopolySimulation/Results/SimulationResults (n = " + n + ").csv";
+		String file = "src/monopolySimulation/Results/SimulationResults (Strategy " + strategy.toString() + ", n = " + n + ").csv";
 		RedBlackBST<Integer, GameSpace[]> strategyResults = null;
 
 		try (PrintWriter writer = new PrintWriter(file)) {
@@ -127,7 +127,7 @@ public class GameSimulationClient {
 	 * Test method for writeResults and writeTrials methods.
 	 */
 	private static void testWriteResults() {
-		strategyAResults = new RedBlackBST<>();
+		
 		GameSpace[] results = new GameSpace[3];
 
 		SpaceNames[] allSpaceNames = SpaceNames.values();
@@ -140,5 +140,6 @@ public class GameSimulationClient {
 		strategyAResults.put(2, results);
 
 		writeResults(1000, Strategy.A);
+		writeResults(1000, Strategy.B);
 	}
 }
