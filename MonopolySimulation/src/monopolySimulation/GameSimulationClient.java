@@ -19,41 +19,42 @@ public class GameSimulationClient {
 	private static RedBlackBST<Integer, GameSpace[]> strategyBResults = new RedBlackBST<>();
 
 	public static void main(String[] args) {
-		
-		int currentMaxTurns = 1_000_000;
-		
-		for (int i = 1000; i <= currentMaxTurns; i *= 10) {
-			
+
+		final int MAX_TURNS = 1_000_000;
+
+		for (int currentTurns = 1000; currentTurns <= MAX_TURNS; currentTurns *= 10) {
+
 			for (Strategy type : Strategy.values()) {
-				
+
 				for (int trial = 1; trial < 11; trial++) {
-					
-					simulateGame(currentMaxTurns, type, trial);
+
+					simulateGame(currentTurns, type, trial);
 				}
-				
-				writeResults(currentMaxTurns, type);
+
+				writeResults(currentTurns, type);
 			}
 		}
 	}
 
 	/**
+	 * Simulates a game of Monopoly with {@code maxTurns} turns and using
+	 * {@code strategy} while in jail.
 	 *
-	 * @param maxTurns
-	 * @param strategy
-	 * @param trial
+	 * @param maxTurns The maximum number of turns in the game.
+	 * @param strategy The strategy the player uses while in jail.
+	 * @param trial    The trial number for this simulation.
 	 */
 	private static void simulateGame(int maxTurns, Strategy strategy, int trial) {
-		
+
 		Game game = new Game(maxTurns, strategy);
-		
+
 		for (int rollCounter = 0; rollCounter < maxTurns; rollCounter++) {
 			game.roll();
 		}
-		
+
 		if (strategy == Strategy.A) {
 			strategyAResults.put(trial, game.getGameBoard());
-		}
-		else {
+		} else {
 			strategyBResults.put(trial, game.getGameBoard());
 		}
 	}
