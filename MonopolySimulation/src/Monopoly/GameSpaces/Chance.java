@@ -46,10 +46,14 @@ public class Chance extends GameSpace {
 
 		ChanceCards drawnEffect = cardDeck.pop();
 
+		if (drawnEffect == null) {
+			return null;
+		}
+		
 		if (drawnEffect == ChanceCards.GET_OUT_OF_JAIL_FREE) {
 			isGetOutOfJailOwned = true;
 		}
-
+		
 		return SpaceEffects.valueOf(drawnEffect.toString());
 	}
 

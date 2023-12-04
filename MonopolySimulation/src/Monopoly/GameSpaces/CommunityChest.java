@@ -45,7 +45,11 @@ public class CommunityChest extends GameSpace {
 		}
 
 		CommunityChestCards drawnEffect = cardDeck.pop();
-
+		
+		if (drawnEffect == null) {
+			return null;
+		}
+		
 		if (drawnEffect == CommunityChestCards.GET_OUT_OF_JAIL_FREE) {
 			isGetOutOfJailOwned = true;
 		}
