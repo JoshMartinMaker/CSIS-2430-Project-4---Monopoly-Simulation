@@ -61,17 +61,25 @@ public class CommunityChest extends GameSpace {
 		final int CARD_DECK_SIZE = 16;
 
 		CommunityChestCards[] allCards = new CommunityChestCards[CARD_DECK_SIZE];
-		CommunityChestCards[] allImplementedCards = CommunityChestCards.values();
+		CommunityChestCards[] implementedCards = CommunityChestCards.values();
+		int addedCards = 0;
 
-		for (int i = 0; i < CARD_DECK_SIZE; i++) {
-
-			CommunityChestCards currentCard = null;
-
-			if (i < allImplementedCards.length) {
-				currentCard = allImplementedCards[i];
+		// Add implemented cards
+		for (int i = 0; i < implementedCards.length; i++) {
+			
+			CommunityChestCards currentCard = implementedCards[i];
+			
+			if ((currentCard == CommunityChestCards.GET_OUT_OF_JAIL_FREE) && (isGetOutOfJailOwned)) {
+				continue;
 			}
-
+			
 			allCards[i] = currentCard;
+			addedCards++;
+		}
+		
+		// Add non-implemented cards
+		for (int i = addedCards; i < CARD_DECK_SIZE; i++) {
+			allCards[i] = null;
 		}
 
 		StdRandom.shuffle(allCards);
@@ -93,8 +101,10 @@ public class CommunityChest extends GameSpace {
 		if (isGetOutOfJailOwned) {
 
 			isGetOutOfJailOwned = false;
+			
 			return true;
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
