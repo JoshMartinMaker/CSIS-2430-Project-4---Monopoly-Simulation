@@ -22,9 +22,9 @@ public class GoToJail extends GameSpace {
 	}
 	
 	/**
-	 * Returns the effect of landing on this space, {@link SpaceEffects#JAIL}.
+	 * Returns the effect of landing on this space: {@link SpaceEffects#JAIL}.
 	 * 
-	 * @return The effect of landing on this space, {@link SpaceEffects#JAIL}.
+	 * @return The effect of landing on this space: {@link SpaceEffects#JAIL}.
 	 */
 	@Override
 	public SpaceEffects effect() {
