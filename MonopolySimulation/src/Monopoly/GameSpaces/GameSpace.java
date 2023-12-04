@@ -61,7 +61,7 @@ public class GameSpace implements SpaceEffect {
 	 */
 	public double getPercentLandedOn() {
 		
-		this.percentLandedOn = this.timesLandedOn / this.maxTurns;
+		this.percentLandedOn = ((double) this.timesLandedOn) / this.maxTurns;
 		
 		return this.percentLandedOn;
 	}

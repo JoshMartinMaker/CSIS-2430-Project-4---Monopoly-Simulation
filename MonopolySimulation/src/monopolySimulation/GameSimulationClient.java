@@ -106,11 +106,11 @@ public class GameSimulationClient {
 			StringBuilder currentTrialResults = new StringBuilder("Trial " + trial + "\n\n");
 			GameSpace[] currentGameBoard = results.get(trial);
 
-			currentTrialResults.append("Space Name,Times Landed On,Percent Landed On\n");
+			currentTrialResults.append("Space Name,Times Landed On,Percent Landed On (%)\n");
 
 			for (GameSpace space : currentGameBoard) {
-				currentTrialResults.append(
-						space.getName() + "," + space.getTimesLandedOn() + "," + space.getPercentLandedOn() + "\n");
+				currentTrialResults.append(String.format(
+						"%s,%d,%.3f%n", space.getName(), space.getTimesLandedOn(), 100* space.getPercentLandedOn()));
 			}
 
 			allTrialResults[trial - 1] = currentTrialResults.toString();
