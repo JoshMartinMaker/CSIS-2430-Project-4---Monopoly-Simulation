@@ -1,6 +1,12 @@
 package Monopoly.GameSpaces;
 
-public enum chanceCards {
+/**
+ * Represents the names of Chance cards in the game Monopoly.
+ * 
+ * @author Zach Royer
+ *
+ */
+public enum ChanceCards {
 	NEXT_RAILROAD,
 	NEXT_UTILITY,
 	GET_OUT_OF_JAIL_FREE,
