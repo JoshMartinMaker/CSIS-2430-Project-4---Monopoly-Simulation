@@ -21,7 +21,7 @@ public class GameSpace implements SpaceEffect {
 	}
 
 	@Override
-	public spaceEffects effect() {
+	public SpaceEffects effect() {
 		return null;
 	}
 
