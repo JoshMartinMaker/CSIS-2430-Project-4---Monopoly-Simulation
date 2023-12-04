@@ -15,14 +15,18 @@ import edu.princeton.cs.algs4.RedBlackBST;
  */
 public class GameSimulationClient {
 	
-    private RedBlackBST<Integer, GameSpace[]> strategyAResults;
-    private RedBlackBST<Integer, GameSpace[]> strategyBResults;
+    private static RedBlackBST<Integer, GameSpace[]> strategyAResults = new RedBlackBST<>();
+    private static RedBlackBST<Integer, GameSpace[]> strategyBResults = new RedBlackBST<>();
     
 	public static void main(String[] args) {
+<<<<<<< HEAD
 		for (int n = 0; n < 1_000_000; n = game.roll()){
 
 		}
 		simulateGame(game.roll(), Strategy.values());
+=======
+		
+>>>>>>> 2455a8fca714db6a52dfec6decb4d3af9a3f4e61
     }
 
     private void simulateGame(int maxTurns, Strategy startegy) {
@@ -31,14 +35,30 @@ public class GameSimulationClient {
     
     /**
      * Writes simulation results to a .csv file.
+     * 
+     * @param n The number of turns taken in each simulation.
+     * @param strategy The strategy whose results to be printed.
      */
-    private void writeResults() {
+    private static void writeResults(int n, Strategy strategy) {
     	
-    	String file = "src/monopolySimulation/Resources/SimulationResults.csv";
+    	String file = "src/monopolySimulation/Results/SimulationResults (n = " + n + ").csv";
+    	RedBlackBST<Integer, GameSpace[]> strategyResults = null;
     	
     	try (PrintWriter writer = new PrintWriter(file)) {
 			
-    		writeTrials(writer);
+			switch (strategy) {
+			case A:
+				strategyResults = strategyAResults;
+				break;
+			case B:
+				strategyResults = strategyBResults;
+				break;
+			}
+    		
+    		writer.println("Strategy " + strategy + ",n = " + n);
+    		writer.println();
+    		writer.println();
+    		writeTrials(writer, strategyResults);
     		
 		}
 		catch (FileNotFoundException e) {
@@ -47,26 +67,52 @@ public class GameSimulationClient {
     }
 
 	/**
+	 * Writes the results of all trials in {@code results} with {@code writer}.
 	 * 
-	 * 
-	 * @param writer
+	 * @param writer The object that will write {@code results} to file.
+	 * @param results The simulation results that should be printed.
 	 */
-	private void writeTrials(PrintWriter writer) {
+	private static void writeTrials(PrintWriter writer, RedBlackBST<Integer, GameSpace[]> results) {
 		
-		StringBuilder[] trialResults = new StringBuilder[strategyAResults.size()];
+		String[] allTrialResults = new String[results.size()];
 		
-		for (Integer trial : strategyAResults.keys()) {
+		for (Integer trial : results.keys()) {
 			
-			StringBuilder currentTrialResults = new StringBuilder(trial + ";");
-			GameSpace[] currentBoard = strategyAResults.get(trial);
+			StringBuilder currentTrialResults = new StringBuilder("Trial " + trial + "\n\n");
+			GameSpace[] currentGameBoard = results.get(trial);
 			
-			currentTrialResults.append("Space Name,Times Landed On,Percent Landed On;");
+			currentTrialResults.append("Space Name,Times Landed On,Percent Landed On\n");
 			
-			for (GameSpace space : currentBoard) {
-				currentTrialResults.append(space.getName() + "," + space.getTimesLandedOn() + "," + space.getPercentLandedOn() + ";");
+			for (GameSpace space : currentGameBoard) {
+				currentTrialResults.append(space.getName() + "," + space.getTimesLandedOn() + "," + space.getPercentLandedOn() + "\n");
 			}
 			
-			trialResults[trial] = currentTrialResults;
+			allTrialResults[trial - 1] = currentTrialResults.toString();
 		}
+		
+		for (String trialResult : allTrialResults) {
+			writer.println(trialResult);
+			writer.println();
+		}
+		
+	}
+	
+	/**
+	 * Test method for writeResults and writeTrials methods.
+	 */
+	private static void testWriteResults() {
+		strategyAResults = new RedBlackBST<>();
+		GameSpace[] results = new GameSpace[3];
+		
+		SpaceNames[] allSpaceNames = SpaceNames.values();
+		
+		for (int i = 0; i < results.length; i++) {
+			results[i] = new GameSpace(allSpaceNames[i], 1000);
+		}
+
+		strategyAResults.put(1, results);
+		strategyAResults.put(2, results);
+		
+		writeResults(1000, Strategy.A);
 	}
 }
