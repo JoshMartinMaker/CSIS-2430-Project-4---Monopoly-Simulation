@@ -106,6 +106,7 @@ public class Game {
 		// If the player rolled three doubles in a row
 		if (doublesRolled == 3) {
 			goToJail();
+			gameBoard[SPACES_BY_NAME.get(SpaceNames.JAIL)].incrementTimesLandedOn();
 			return;
 		}
 
@@ -152,13 +153,15 @@ public class Game {
 	/**
 	 * Moves the player by the specified number of spaces. If {@code spaces} is
 	 * positive, moves the player forward in the board. If {@code spaces} is
-	 * negative, moves the player backwards in the board.
+	 * negative, moves the player backwards in the board. This counts as "landing
+	 * on" the space and increments the times the space has been landed on.
 	 * 
 	 * @param spaces The number of spaces to move the player.
 	 */
 	public void move(int spaces) {
 		
 		playerLocation = (playerLocation + spaces) % gameBoard.length;
+		gameBoard[playerLocation].incrementTimesLandedOn();
 		
 		if (spaces <= 0) {
 			return;
