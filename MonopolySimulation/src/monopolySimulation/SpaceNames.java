@@ -1,7 +1,7 @@
 package monopolySimulation;
 
 /**
- * 
+ * Represents the space names on the Monopoly game board.
  * 
  * @author Josh Martin
  *
