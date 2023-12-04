@@ -45,11 +45,14 @@ public class Game {
 
 			if (spaceNamesValues[i].toString().contains("COMMUNITY_CHEST")) {
 				gameBoard[i] = new CommunityChest(spaceNamesValues[i], maxTurns);
-			} else if (spaceNamesValues[i].toString().contains("CHANCE")) {
+			}
+			else if (spaceNamesValues[i].toString().contains("CHANCE")) {
 				gameBoard[i] = new Chance(spaceNamesValues[i], maxTurns);
-			} else if (spaceNamesValues[i].toString().contains("GO_TO_JAIL")) {
+			}
+			else if (spaceNamesValues[i].toString().contains("GO_TO_JAIL")) {
 				gameBoard[i] = new GoToJail(spaceNamesValues[i], maxTurns);
-			} else {
+			}
+			else {
 				gameBoard[i] = new GameSpace(spaceNamesValues[i], maxTurns);
 			}
 		}
@@ -95,7 +98,8 @@ public class Game {
 		if (die1 == die2) {
 			leaveJail();
 			doublesRolled++;
-		} else {
+		}
+		else {
 			doublesRolled = 0;
 		}
 
@@ -126,7 +130,8 @@ public class Game {
 
 		if (getOutOfJailCards >= 1) {
 			useGetOutOfJailCard();
-		} else {
+		}
+		else {
 			leaveJail();
 		}
 	}
@@ -152,6 +157,7 @@ public class Game {
 	 * @param spaces The number of spaces to move the player.
 	 */
 	public void move(int spaces) {
+		
 		playerLocation = (playerLocation + spaces) % gameBoard.length;
 		
 		if (spaces <= 0) {
@@ -232,6 +238,7 @@ public class Game {
 	private void goToJail() {
 		move(SpaceNames.JAIL);
 		inJail = true;
+		doublesRolled = 0;
 	}
 
 	/**
