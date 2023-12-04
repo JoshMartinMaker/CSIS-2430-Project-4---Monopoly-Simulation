@@ -39,6 +39,7 @@ public class Game {
 
 		// Initialize gameBoard
 		SpaceNames[] spaceNamesValues = SpaceNames.values();
+		gameBoard = new GameSpace[spaceNamesValues.length];
 
 		for (int i = 0; i < spaceNamesValues.length; i++) {
 
