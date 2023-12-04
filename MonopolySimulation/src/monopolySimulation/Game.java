@@ -39,16 +39,20 @@ public class Game {
 
 		// Initialize gameBoard
 		SpaceNames[] spaceNamesValues = SpaceNames.values();
+		gameBoard = new GameSpace[spaceNamesValues.length];
 
 		for (int i = 0; i < spaceNamesValues.length; i++) {
 
 			if (spaceNamesValues[i].toString().contains("COMMUNITY_CHEST")) {
 				gameBoard[i] = new CommunityChest(spaceNamesValues[i], maxTurns);
-			} else if (spaceNamesValues[i].toString().contains("CHANCE")) {
+			}
+			else if (spaceNamesValues[i].toString().contains("CHANCE")) {
 				gameBoard[i] = new Chance(spaceNamesValues[i], maxTurns);
-			} else if (spaceNamesValues[i].toString().contains("GO_TO_JAIL")) {
+			}
+			else if (spaceNamesValues[i].toString().contains("GO_TO_JAIL")) {
 				gameBoard[i] = new GoToJail(spaceNamesValues[i], maxTurns);
-			} else {
+			}
+			else {
 				gameBoard[i] = new GameSpace(spaceNamesValues[i], maxTurns);
 			}
 		}
@@ -94,13 +98,15 @@ public class Game {
 		if (die1 == die2) {
 			leaveJail();
 			doublesRolled++;
-		} else {
+		}
+		else {
 			doublesRolled = 0;
 		}
 
 		// If the player rolled three doubles in a row
 		if (doublesRolled == 3) {
 			goToJail();
+			gameBoard[SPACES_BY_NAME.get(SpaceNames.JAIL)].incrementTimesLandedOn();
 			return;
 		}
 
@@ -125,7 +131,8 @@ public class Game {
 
 		if (getOutOfJailCards >= 1) {
 			useGetOutOfJailCard();
-		} else {
+		}
+		else {
 			leaveJail();
 		}
 	}
@@ -146,12 +153,15 @@ public class Game {
 	/**
 	 * Moves the player by the specified number of spaces. If {@code spaces} is
 	 * positive, moves the player forward in the board. If {@code spaces} is
-	 * negative, moves the player backwards in the board.
+	 * negative, moves the player backwards in the board. This counts as "landing
+	 * on" the space and increments the times the space has been landed on.
 	 * 
 	 * @param spaces The number of spaces to move the player.
 	 */
 	public void move(int spaces) {
+		
 		playerLocation = (playerLocation + spaces) % gameBoard.length;
+		gameBoard[playerLocation].incrementTimesLandedOn();
 		
 		if (spaces <= 0) {
 			return;
@@ -231,6 +241,7 @@ public class Game {
 	private void goToJail() {
 		move(SpaceNames.JAIL);
 		inJail = true;
+		doublesRolled = 0;
 	}
 
 	/**
