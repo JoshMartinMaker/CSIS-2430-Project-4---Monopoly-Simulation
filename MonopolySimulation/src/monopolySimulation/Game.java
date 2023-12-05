@@ -106,7 +106,6 @@ public class Game {
 		// If the player rolled three doubles in a row
 		if (doublesRolled == 3) {
 			goToJail();
-			gameBoard[SPACES_BY_NAME.get(SpaceNames.JAIL)].incrementTimesLandedOn();
 			return;
 		}
 
@@ -232,6 +231,7 @@ public class Game {
 	 */
 	public void move(SpaceNames location) {
 		playerLocation = SPACES_BY_NAME.get(location);
+		gameBoard[playerLocation].incrementTimesLandedOn();
 	}
 
 	/**
@@ -242,6 +242,7 @@ public class Game {
 		move(SpaceNames.JAIL);
 		inJail = true;
 		doublesRolled = 0;
+		gameBoard[SPACES_BY_NAME.get(SpaceNames.JAIL)].incrementTimesLandedOn();
 	}
 
 	/**
