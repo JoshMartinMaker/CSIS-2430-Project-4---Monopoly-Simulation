@@ -117,6 +117,9 @@ public class Game {
 		if (!inJail) {
 			move(die1 + die2);
 		}
+		else {
+			gameBoard[playerLocation].incrementTimesLandedOn();
+		}
 	}
 
 	/**
