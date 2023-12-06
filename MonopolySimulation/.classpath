@@ -7,5 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/algs4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-csv-1.10.0/commons-csv-1.10.0.jar" sourcepath="lib/commons-csv-1.10.0/commons-csv-1.10.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-csv-1.10.0/commons-csv-1.10.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

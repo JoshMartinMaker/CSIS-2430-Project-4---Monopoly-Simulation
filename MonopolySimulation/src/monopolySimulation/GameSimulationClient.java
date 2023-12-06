@@ -1,7 +1,9 @@
 package monopolySimulation;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 import Monopoly.GameSpaces.GameSpace;
 import edu.princeton.cs.algs4.RedBlackBST;
@@ -63,16 +65,16 @@ public class GameSimulationClient {
 	 * Writes simulation results to a .csv file.
 	 * 
 	 * @param n        The number of turns taken in each simulation.
-	 * @param strategy The strategy whose results to be printed.
+	 * @param strategy The strategy whose results are to be printed.
 	 */
 	private static void writeResults(int n, Strategy strategy) {
 
-		String file = "src/monopolySimulation/Results/SimulationResults (Strategy " + strategy.toString() + ", n = " + n + ").csv";
+		String file = "Results/SimulationResults (Strategy " + strategy.toString() + ", n = " + n + ").csv";
 		RedBlackBST<Integer, GameSpace[]> strategyResults = null;
 
-		try (PrintWriter writer = new PrintWriter(file)) {
-
-			switch (strategy) {
+    	try (CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(file), CSVFormat.DEFAULT)) {
+    		
+    		switch (strategy) {
 			case A:
 				strategyResults = strategyAResults;
 				break;
@@ -81,29 +83,29 @@ public class GameSimulationClient {
 				break;
 			}
 
-			writer.println("Strategy " + strategy + ",n = " + n);
-			writer.println();
-			writer.println();
-			writeTrials(writer, strategyResults);
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+			csvPrinter.print("Strategy " + strategy);
+			csvPrinter.print("n = " + n);
+			csvPrinter.println();
+			csvPrinter.println();
+			
+			writeTrials(csvPrinter, strategyResults);
+			
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 
 	/**
 	 * Writes the results of all trials in {@code results} with {@code writer}.
 	 * 
-	 * @param writer  The object that will write {@code results} to file.
+	 * @param csvPrinter  The object that will write {@code results} to file.
 	 * @param results The simulation results that should be printed.
+	 * @throws IOException
 	 */
-	private static void writeTrials(PrintWriter writer, RedBlackBST<Integer, GameSpace[]> results) {
-
-		String[] allTrialResults = new String[results.size()];
+	private static void writeTrials(CSVPrinter csvPrinter, RedBlackBST<Integer, GameSpace[]> results) throws IOException {
 
 		for (Integer trial : results.keys()) {
 
-			StringBuilder currentTrialResults = new StringBuilder("Trial " + trial + "\n\n");
 			GameSpace[] currentGameBoard = results.get(trial);
 			int totalTimesLanded = 0;
 
@@ -111,23 +113,27 @@ public class GameSimulationClient {
 				totalTimesLanded += el.getTimesLandedOn();
 			}
 			
-			currentTrialResults.append("Space Name,Times Landed On,Percent Landed On (%)\n");
-
+			csvPrinter.printRecord("Trial " + trial);
+			csvPrinter.println();
+			
+			csvPrinter.print("Space Name");
+			csvPrinter.print("Times Landed On");
+			csvPrinter.print("Percent Landed On (%)");
+			csvPrinter.println();
+			
 			for (GameSpace space : currentGameBoard) {
 				
 				int timesLandedOn = space.getTimesLandedOn();
 				double percentLandedOn = ((double) timesLandedOn) / totalTimesLanded;
 				
-				currentTrialResults.append(String.format(
-						"%s,%d,%.3f%n", space.getName(), timesLandedOn, 100*percentLandedOn));
+				csvPrinter.print(space.getName());
+				csvPrinter.print(timesLandedOn);
+				csvPrinter.print(100*percentLandedOn);
+				csvPrinter.println();
 			}
 
-			allTrialResults[trial - 1] = currentTrialResults.toString();
-		}
-
-		for (String trialResult : allTrialResults) {
-			writer.println(trialResult);
-			writer.println();
+			csvPrinter.println();
+			csvPrinter.println();
 		}
 
 	}
